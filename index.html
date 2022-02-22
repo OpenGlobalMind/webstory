@@ -29,6 +29,9 @@
                 <button id="play" type="button" class="btn btn-primary">Play</button>
             </div>
             <div class="col">
+                <button id="save" type="button" class="btn btn-primary">Save</button>
+            </div>
+            <div class="col">
                 <div class="form-check form-switch form-check-inline">
                     <input id="loop" class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
                     <label class="form-check-label" for="flexSwitchCheckDefault">loop</label>
@@ -43,7 +46,7 @@
     </div>
 
     <script>
-const exampleScript = `https://BentleyDavis.com
+        const exampleScript = `https://BentleyDavis.com
 2
 https://www.jerrysbrain.com
 2
@@ -63,7 +66,6 @@ https://twitter.com/ma_parent`
         const editorElement = document.getElementById('editor');
 
         async function play() {
-            window.localStorage.setItem('script', editorElement.value)
             script = editorElement.value.split(/\n/)
             let loop;
             do {
@@ -82,13 +84,21 @@ https://twitter.com/ma_parent`
 
         }
 
-        //editorElement.value = JSON.stringify(exampleScript,undefined,2)
+        document.getElementById('play').addEventListener('mouseup', play);
 
-        const playButton = document.getElementById('play');
-        playButton.addEventListener('mouseup', play);
+        document.getElementById('save').addEventListener('mouseup', ()=>{
+            window.localStorage.setItem('script', editorElement.value)
+        });
+
 
         const savedScript = window.localStorage.getItem('script')
-        if (savedScript){
+        let params = new URLSearchParams(document.location.search);
+        let urlParamUrl = params.get("url"); 
+        if (urlParamUrl) {
+            fetch(decodeURIComponent(urlParamUrl))
+                .then(response => response.text())
+                .then(data => editorElement.value = data);
+        } else if (savedScript) {
             editorElement.value = savedScript
         } else {
             editorElement.value = exampleScript
