@@ -11,7 +11,8 @@
     <style>
         #editor {
             font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            height: 80vh
+            height: 80vh;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -46,17 +47,23 @@
     </div>
 
     <script>
-        const exampleScript = `https://BentleyDavis.com
+        const allowedScriptSources = [
+            'https://gist.githubusercontent.com/BentleyDavis/',
+            'https://raw.githubusercontent.com/OpenGlobalMind',
+        ]
+
+        const exampleScript = `http://peterkaminski.com
+2
+https://maparent.ca/
 2
 https://www.jerrysbrain.com
 2
-https://app.thebrain.com/brains/3d80058c-14d8-5361-0b61-a061f89baf87/thoughts/32f9fc36-6963-9ee0-9b44-a89112919e29/attachments/6492d41a-73b2-20d8-b145-3283598c612b
+https://app.thebrain.com/brains/3d80058c-14d8-5361-0b61-a061f89baf87/thoughts/32f9fc36-6963-9ee0-9b44-a89112919e29
 5
-https://app.thebrain.com/brains/3d80058c-14d8-5361-0b61-a061f89baf87/thoughts/f7b838dd-08d8-3a02-d72e-d2a7efe0c821/notes
-2
-https://twitter.com/peterkaminski/
-2
-https://twitter.com/ma_parent`
+https://app.thebrain.com/brains/3d80058c-14d8-5361-0b61-a061f89baf87/thoughts/f7b838dd-08d8-3a02-d72e-d2a7efe0c821
+5
+https://BentleyDavis.com
+2`
 
         function seconds(_seconds) {
             return new Promise(resolve => setTimeout(resolve, _seconds * 1000))
@@ -64,7 +71,7 @@ https://twitter.com/ma_parent`
 
 
         const editorElement = document.getElementById('editor');
-
+        let displayWindow
         async function play() {
             script = editorElement.value.split(/\n/)
             let loop;
@@ -73,7 +80,13 @@ https://twitter.com/ma_parent`
                     const _seconds = Number(line)
                     if (Number.isNaN(_seconds)) {
                         console.log(line)
-                        window.open(line, 'stage')
+                        // if (displayWindow === undefined || displayWindow.closed) {
+                        //     displayWindow = window.open(line, 'displayWindow')
+                        // } else {
+                        //     debugger
+                        displayWindow = window.open(line, 'displayWindow')
+                        // }
+
                     } else {
                         console.log(_seconds)
                         await seconds(_seconds)
@@ -84,17 +97,26 @@ https://twitter.com/ma_parent`
 
         }
 
-        document.getElementById('play').addEventListener('mouseup', play);
 
-        document.getElementById('save').addEventListener('mouseup', ()=>{
+        document.getElementById('play').addEventListener('mouseup', play);
+        document.getElementById('save').addEventListener('mouseup', () => {
             window.localStorage.setItem('script', editorElement.value)
         });
 
 
+        // Init proper script   
         const savedScript = window.localStorage.getItem('script')
         let params = new URLSearchParams(document.location.search);
-        let urlParamUrl = params.get("url"); 
+        let urlParamUrl = params.get("url");
+        let urlParamAllowed = false
         if (urlParamUrl) {
+            for (const allowedUrl of allowedScriptSources) {
+                if (urlParamUrl.startsWith(allowedUrl)) {
+                    urlParamAllowed = true;
+                }
+            }
+        }
+        if (urlParamAllowed) {
             fetch(decodeURIComponent(urlParamUrl))
                 .then(response => response.text())
                 .then(data => editorElement.value = data);
