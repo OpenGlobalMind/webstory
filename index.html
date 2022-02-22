@@ -24,13 +24,26 @@
                 <span class="fs-4">Web Story</span>
             </a>
         </header>
-        <div class="mb-3">
-            <button id="play" type="button" class="btn btn-primary">Play</button>
+        <div class="row">
+            <div class="col">
+                <button id="play" type="button" class="btn btn-primary">Play</button>
+            </div>
+            <div class="col">
+                <div class="form-check form-switch form-check-inline">
+                    <input id="loop" class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                    <label class="form-check-label" for="flexSwitchCheckDefault">loop</label>
+                </div>
+            </div>
         </div>
         <div class="mb-3">
             <label for="editor" class="form-label">Script Editor</label>
-            <textarea id="editor" class="form-control">
-https://BentleyDavis.com
+            <textarea id="editor" class="form-control"></textarea>
+        </div>
+
+    </div>
+
+    <script>
+const exampleScript = `https://BentleyDavis.com
 2
 https://www.jerrysbrain.com
 2
@@ -40,38 +53,47 @@ https://app.thebrain.com/brains/3d80058c-14d8-5361-0b61-a061f89baf87/thoughts/f7
 2
 https://twitter.com/peterkaminski/
 2
-https://twitter.com/ma_parent</textarea>
-        </div>
-
-    </div>
-
-    <script>
+https://twitter.com/ma_parent`
 
         function seconds(_seconds) {
             return new Promise(resolve => setTimeout(resolve, _seconds * 1000))
         }
 
 
-        async function play() {
-            const editorElement = document.getElementById('editor');
-            script = editorElement.value.split(/\n/)
-            for (const line of script) {
-                const _seconds = Number(line)
-                if (Number.isNaN(_seconds)) {
-                    console.log(line)
-                    window.open(line, 'stage')
-                } else {
-                    console.log(_seconds)
-                    await seconds(_seconds)
-                }
+        const editorElement = document.getElementById('editor');
 
-            }
+        async function play() {
+            window.localStorage.setItem('script', editorElement.value)
+            script = editorElement.value.split(/\n/)
+            let loop;
+            do {
+                for (const line of script) {
+                    const _seconds = Number(line)
+                    if (Number.isNaN(_seconds)) {
+                        console.log(line)
+                        window.open(line, 'stage')
+                    } else {
+                        console.log(_seconds)
+                        await seconds(_seconds)
+                    }
+                }
+                loop = document.getElementById('loop').checked;
+            } while (loop)
+
         }
 
         //editorElement.value = JSON.stringify(exampleScript,undefined,2)
 
         const playButton = document.getElementById('play');
         playButton.addEventListener('mouseup', play);
+
+        const savedScript = window.localStorage.getItem('script')
+        if (savedScript){
+            editorElement.value = savedScript
+        } else {
+            editorElement.value = exampleScript
+        }
+
     </script>
 </body>
 
