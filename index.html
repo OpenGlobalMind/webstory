@@ -28,15 +28,19 @@
             <button id="play" type="button" class="btn btn-primary">Play</button>
         </div>
         <div class="mb-3">
-            <label for="exampleFormControlTextarea1" class="form-label">Script Editor</label>
+            <label for="editor" class="form-label">Script Editor</label>
             <textarea id="editor" class="form-control">
-http://BentleyDavis.com
+https://BentleyDavis.com
 2
-http://BentleyDavis.com/blog
+https://www.jerrysbrain.com
 2
-http://jerrysbrain.com
+https://app.thebrain.com/brains/3d80058c-14d8-5361-0b61-a061f89baf87/thoughts/32f9fc36-6963-9ee0-9b44-a89112919e29/attachments/6492d41a-73b2-20d8-b145-3283598c612b
+5
+https://app.thebrain.com/brains/3d80058c-14d8-5361-0b61-a061f89baf87/thoughts/f7b838dd-08d8-3a02-d72e-d2a7efe0c821/notes
 2
-            </textarea>
+https://twitter.com/peterkaminski/
+2
+https://twitter.com/ma_parent</textarea>
         </div>
 
     </div>
@@ -51,17 +55,13 @@ http://jerrysbrain.com
         async function play() {
             const editorElement = document.getElementById('editor');
             script = editorElement.value.split(/\n/)
-
-            //const script = JSON.parse(editorElement.value);
-
             for (const line of script) {
                 const _seconds = Number(line)
-                console.log(_seconds)
                 if (Number.isNaN(_seconds)) {
-                    console.log("line")
-
+                    console.log(line)
                     window.open(line, 'stage')
                 } else {
+                    console.log(_seconds)
                     await seconds(_seconds)
                 }
 
