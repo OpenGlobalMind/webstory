@@ -27,7 +27,13 @@
         </header>
         <div class="row">
             <div class="col">
-                <button id="play" type="button" class="btn btn-primary">Play</button>
+                <button id="play" type="button" class="btn btn-primary">
+                    Play
+                    <svg version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <path d="m90 50-80 40v-80z"
+                            style="paint-order:stroke markers fill;stroke-linecap:round;stroke-linejoin:round;stroke-width:10" />
+                    </svg>
+                </button>
             </div>
             <div class="col">
                 <button id="save" type="button" class="btn btn-primary">Save</button>
@@ -39,8 +45,11 @@
                 </div>
             </div>
         </div>
+        <hr>
         <div class="mb-3">
-            <label for="editor" class="form-label">Script Editor</label>
+            <label for="editor" class="form-label">
+                <h2>Script Editor</h2>
+            </label>
             <textarea id="editor" class="form-control"></textarea>
         </div>
 
@@ -98,8 +107,8 @@ https://BentleyDavis.com
         }
 
 
-        document.getElementById('play').addEventListener('mouseup', play);
-        document.getElementById('save').addEventListener('mouseup', () => {
+        document.getElementById('play').addEventListener('click', play);
+        document.getElementById('save').addEventListener('click', () => {
             window.localStorage.setItem('script', editorElement.value)
         });
 
